@@ -4,12 +4,14 @@
     <Dialog id="_IDDialog" title="Upload Attachment" class="sapUiResponsiveContentPadding"
         beforeOpen=".onBeforeOpen"
         afterClose=".onAfterClose">
+
         <content>
            <u:FileUploader id="__fileUploader"
             placeholder="Choose a file..." 
             change="onFileChange"
              multiple="false" 
-             fileType="pdf,jpeg,png" 
+             fileType="pdf,jpeg,png"
+             uploadComplete="onFileUploadDone" 
  />
                      <Button id="ok"
                 text="OK"

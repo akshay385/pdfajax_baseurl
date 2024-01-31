@@ -26,6 +26,9 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
             }
 
             return {
+                onFileUploadDone:function (oEvent) {
+                    debugger
+                },
                 onBeforeOpen: function (oEvent) {
                     oUploadDialog = oEvent.getSource();
                     oExtensionAPI.addDependent(oUploadDialog);
@@ -77,8 +80,12 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                  * on File Change
                  */
                 onFileChange: function (oEvent) {
+                    debugger
                     var file = oEvent.getParameters("files").files[0];
                     this.file = file;
+                },
+                onFileUploadDone: function (oEvent) {
+                    debugger
                 },
 
 
@@ -89,6 +96,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                     const match = inputString.match(regex);
                     const invoice_no = match[1];                                                                                                            
                     var oUploadSet = byId("__fileUploader");
+                    let src = oEvent.oSource
                     //Upload imaged
                     var reader = new FileReader();
                     reader.onload = function (oEvent) {
@@ -96,7 +104,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                         debugger;
                         var file = this.file;
                         this.content = oEvent.currentTarget.result;
-                        this.createfile(invoice_no);
+                        this.createfile(invoice_no,src);
                     }.bind(this);
                     reader.readAsDataURL(this.file);
 
@@ -106,7 +114,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                 /**
                  *  Create Operation to create an entry in CAP
                  */
-                createfile: function (invoice_no) {
+                createfile: function (invoice_no,evententity) {
                     debugger;
                     var that = this;
                     var invoice_no = invoice_no;
@@ -133,10 +141,13 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                     debugger
                     new Promise((resolve, reject) => {
                         $.ajax(settings)
-                            .done((results, textStatus, request) => {
+                            .done(async (results, textStatus, request) => {
                                 debugger
                                 resolve(results.ID);
                                 debugger 
+                                let eventt = evententity;
+                                await evententity.getParent().getBindingContext().refresh();
+                                
                                 
                                 // var oUploadSet = this.byId("uploadSet");
                                 // oUploadSet.removeAllIncompleteItems();
@@ -151,114 +162,114 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                     })
                     debugger
                     closeDialog();
-                    location.reload();
-                    return 1;
-                    var file_real = this.content;
-                    debugger
+                    // location.reload();
+                    // return 1;
+                    // var file_real = this.content;
+                    // debugger
             
-                    // Remove the data URI prefix
-                    var base64Content = file_real.split(',')[1];
+                    // // Remove the data URI prefix
+                    // var base64Content = file_real.split(',')[1];
                     
-                    var dataURI = "data:application/pdf;base64," + base64Content;
+                    // var dataURI = "data:application/pdf;base64," + base64Content;
 
-                    // Open a new tab
-                    var pdfWindow = window.open("");
+                    // // Open a new tab
+                    // var pdfWindow = window.open("");
                     
-                    // Write HTML content to the new tab with a link to download the PDF
-                    pdfWindow.document.write('<html><head><title>PDF Viewer</title></head><body style="margin:0;"><a href="' + dataURI + '" download="yourFileName.pdf">Download PDF</a></body></html>');
+                    // // Write HTML content to the new tab with a link to download the PDF
+                    // pdfWindow.document.write('<html><head><title>PDF Viewer</title></head><body style="margin:0;"><a href="' + dataURI + '" download="yourFileName.pdf">Download PDF</a></body></html>');
 
-                    // Decode the base64 content to binary
-                    // var base64Data = atob(base64Content);
-                    // var pdfBlob = new Blob([base64Data], { type: 'application/pdf' });
-                    var file_name = this.file.name;
-                    var mime_type = this.file.type;
-                    debugger;
-                    var size = this.file.size;
-                    const binaryData = atob(base64Content);
-                    // Create an ArrayBuffer from the binary data
-                    const arrayBuffer = new ArrayBuffer(binaryData.length);
-                    const uint8Array = new Uint8Array(arrayBuffer);
-                    for (let i = 0; i < binaryData.length; i++) {
-                        uint8Array[i] = binaryData.charCodeAt(i);
-                    }
-                    // Create a Blob from the ArrayBuffer
-                    const blob = new Blob([arrayBuffer], { type: mime_type });
+                    // // Decode the base64 content to binary
+                    // // var base64Data = atob(base64Content);
+                    // // var pdfBlob = new Blob([base64Data], { type: 'application/pdf' });
+                    // var file_name = this.file.name;
+                    // var mime_type = this.file.type;
+                    // debugger;
+                    // var size = this.file.size;
+                    // const binaryData = atob(base64Content);
+                    // // Create an ArrayBuffer from the binary data
+                    // const arrayBuffer = new ArrayBuffer(binaryData.length);
+                    // const uint8Array = new Uint8Array(arrayBuffer);
+                    // for (let i = 0; i < binaryData.length; i++) {
+                    //     uint8Array[i] = binaryData.charCodeAt(i);
+                    // }
+                    // // Create a Blob from the ArrayBuffer
+                    // const blob = new Blob([arrayBuffer], { type: mime_type });
 
-                    // Create a File from the Blob
-                    const file2 = new File([blob], file_name, { type: mime_type });
-                    // const file1 = base64ToFile(base64Data, file_name, mime_type);
-                    var url = "https://elipo_backend-shy-echidna-yp.cfapps.us20.hana.ondemand.com/dev/upload";
-                    var formData = new FormData();
-                    formData.append("file", file_ori);
-                    formData.append("mime_type", mime_type);
-                    formData.append("file_name", file_name);
-                    formData.append("file_id", invoice_no);
-                    formData.append("userid", 'einvoiceportal@gmail.com');
-                    fetch(url, {
-                        method: 'POST',
-                        body: formData
-                    })
-                        .then(function (response) {
-                            if (response.status === 200) {
-                                return response.text(); // or response.json() if the server responds with JSON
-                            } else {
-                                throw new Error("POST request failed with status: " + response.status);
-                            }
-                        })
-                        .then(function (data) {
-                            var response = JSON.parse(data);
+                    // // Create a File from the Blob
+                    // const file2 = new File([blob], file_name, { type: mime_type });
+                    // // const file1 = base64ToFile(base64Data, file_name, mime_type);
+                    // var url = "https://elipo_backend-shy-echidna-yp.cfapps.us20.hana.ondemand.com/dev/upload";
+                    // var formData = new FormData();
+                    // formData.append("file", file_ori);
+                    // formData.append("mime_type", mime_type);
+                    // formData.append("file_name", file_name);
+                    // formData.append("file_id", invoice_no);
+                    // formData.append("userid", 'einvoiceportal@gmail.com');
+                    // fetch(url, {
+                    //     method: 'POST',
+                    //     body: formData
+                    // })
+                    //     .then(function (response) {
+                    //         if (response.status === 200) {
+                    //             return response.text(); // or response.json() if the server responds with JSON
+                    //         } else {
+                    //             throw new Error("POST request failed with status: " + response.status);
+                    //         }
+                    //     })
+                    //     .then(function (data) {
+                    //         var response = JSON.parse(data);
 
-                            if (response.statusCode === 200) {
-                                // Handle the error case
-                                var sMsg = "File Uploaded Successfully";
-                                MessageBox.success(sMsg);
-                                closeDialog();
-                                console.log("Success: " + response.body);
+                    //         if (response.statusCode === 200) {
+                    //             // Handle the error case
+                    //             var sMsg = "File Uploaded Successfully";
+                    //             MessageBox.success(sMsg);
+                    //             closeDialog();
+                    //             console.log("Success: " + response.body);
 
-                            } else {
-                                // Handle the success case
-                                var sMsg = "Failed to upload";
-                                MessageBox.error("Failed to upload");
-                                closeDialog();
-                                console.log("Error: " + response.body);
+                    //         } else {
+                    //             // Handle the success case
+                    //             var sMsg = "Failed to upload";
+                    //             MessageBox.error("Failed to upload");
+                    //             closeDialog();
+                    //             console.log("Error: " + response.body);
 
-                            }
-                            // Handle the response data here
-                            //    var sMsg = "File Uploaded Successfully";
-                            //            MessageBox.success(sMsg);
-                            // console.log("POST request successful. Response data: " + data);
-                        })
-                        .catch(function (error) {
-                            console.error(error);
-                        });
-
-
-
-                    //     var formData = {
-
-                    //     "file": this.content,
-                    //     "mime_type": this.file.type,
-                    //     "file_name": this.file.name,
-                    //     "file_id":6078,
-                    //     "userid":'einvoiceportal@gmail.com'
-
-                    // };
+                    //         }
+                    //         // Handle the response data here
+                    //         //    var sMsg = "File Uploaded Successfully";
+                    //         //            MessageBox.success(sMsg);
+                    //         // console.log("POST request successful. Response data: " + data);
+                    //     })
+                    //     .catch(function (error) {
+                    //         console.error(error);
+                    //     });
 
 
-                    debugger;
-                    // var oCAPModel = this.getOwnerComponent().getModel("oCAPModel");
-                    // var sURL = "/MediaFile";
-                    // //Create call for CAP OData Service
-                    // oCAPModel.create(sURL, oImageData, {
-                    //     success: function (oData, oResponse) {
-                    //         var id = oData.id;
-                    //         var sMsg = "File Uploaded Successfully for ID: " + id;
-                    //         MessageBox.success(sMsg);
-                    //     },
-                    //     error: function (jqXHR, textStatus) {
 
-                    //     },
-                    // });
+                    // //     var formData = {
+
+                    // //     "file": this.content,
+                    // //     "mime_type": this.file.type,
+                    // //     "file_name": this.file.name,
+                    // //     "file_id":6078,
+                    // //     "userid":'einvoiceportal@gmail.com'
+
+                    // // };
+
+
+                    // debugger;
+                    // // var oCAPModel = this.getOwnerComponent().getModel("oCAPModel");
+                    // // var sURL = "/MediaFile";
+                    // // //Create call for CAP OData Service
+                    // // oCAPModel.create(sURL, oImageData, {
+                    // //     success: function (oData, oResponse) {
+                    // //         var id = oData.id;
+                    // //         var sMsg = "File Uploaded Successfully for ID: " + id;
+                    // //         MessageBox.success(sMsg);
+                    // //     },
+                    // //     error: function (jqXHR, textStatus) {
+
+                    // //     },
+                    // // });
                 },
 
 

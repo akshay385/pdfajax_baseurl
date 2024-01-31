@@ -160,7 +160,7 @@
                   },
                   "tableSettings": {
                     "selectionMode": "Multi",
-                    "type": "GridTable"
+                    "type": "ResponsiveTable"
                   }
                 }
               }

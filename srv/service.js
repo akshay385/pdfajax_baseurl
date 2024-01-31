@@ -9,7 +9,7 @@ module.exports = cds.service.impl(async function () {
         debugger
         // console.log('Create called')
         // console.log(JSON.stringify(req.data))
-        req.data.url = `/media/attachments(${req.data.ID})/content`;
+        req.data.url = `/media/attachments(${req.data.idd})/content`;
         // req.data.ID1 = req.data.ID;
         // const entry = {
         //     Enquiry_no :req.data.Enquiry_no,
@@ -30,6 +30,7 @@ module.exports = cds.service.impl(async function () {
         // then read the media content
         if (url.includes("content")) {
             const uid = req.data.pdfId;
+            console.log("attachments read is working")
             var tx = cds.transaction(req);
             // Fetch the media obj from database
            var mediaObj1=  await SELECT `content,mediaType`.from (attachments) .where `pdfId = ${uid}`;
