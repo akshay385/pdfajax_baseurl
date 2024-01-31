@@ -104,6 +104,7 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                         debugger;
                         var file = this.file;
                         this.content = oEvent.currentTarget.result;
+                    // new Promise((resolve) => setTimeout(resolve, 50));
                         this.createfile(invoice_no,src);
                     }.bind(this);
                     reader.readAsDataURL(this.file);
@@ -114,7 +115,8 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                 /**
                  *  Create Operation to create an entry in CAP
                  */
-                createfile: function (invoice_no,evententity) {
+
+                createfile: async function (invoice_no,evententity) {
                     debugger;
                     var that = this;
                     var invoice_no = invoice_no;
@@ -139,16 +141,24 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                         data: JSON.stringify(oImageData)
                     }
                     debugger
-                    new Promise((resolve, reject) => {
+                    const loadData = async () => {
+                    return new Promise((resolve, reject) => {
                         $.ajax(settings)
                             .done(async (results, textStatus, request) => {
                                 debugger
                                 resolve(results.ID);
                                 debugger 
                                 let eventt = evententity;
-                                await evententity.getParent().getBindingContext().refresh();
+                                if(evententity?.getParent()?.getBindingContext() != undefined){
+                                    debugger
+                                    await evententity.getParent().getBindingContext().refresh();
+                                }
+                                else {
+                                    debugger
+                                }
                                 
                                 
+                            
                                 // var oUploadSet = this.byId("uploadSet");
                                 // oUploadSet.removeAllIncompleteItems();
                                 // oUploadSet.getBinding("items").refresh();
@@ -160,6 +170,8 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                                 
                             })
                     })
+                };
+                await loadData();
                     debugger
                     closeDialog();
                     // location.reload();
