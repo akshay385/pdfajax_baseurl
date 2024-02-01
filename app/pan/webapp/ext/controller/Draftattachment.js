@@ -142,9 +142,22 @@ sap.ui.define(["sap/m/MessageBox", "sap/m/MessageToast", "sap/ui/core/UIComponen
                     }
                     debugger
                     const loadData = async () => {
+                        var busy = new sap.m.BusyDialog({ text: "Uploading file..." });
+                         busy.open();
                     return new Promise((resolve, reject) => {
                         $.ajax(settings)
                             .done(async (results, textStatus, request) => {
+                                var stat = textStatus;
+                                if (stat=='success')
+                                {
+                                    busy.close();
+                                    var sMsg = "FILE UPLOADED SUCCESSFULLY";
+                                    MessageBox.success(sMsg);
+                                }
+                                else {
+                                    var ermsg = "ERROR UPLOADING THE FILE"
+                                    MessageBox.error(ermsg);
+                                }
                                 debugger
                                 resolve(results.ID);
                                 debugger 
