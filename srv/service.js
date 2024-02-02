@@ -63,5 +63,11 @@ module.exports = cds.service.impl(async function () {
     }
       
 
+    // this.on('getattachments', async (req) => {
+    //       console.log(req?.data);
+    //       return "function succesfully executed";
+
+    // });
+
 
 });

@@ -9,4 +9,6 @@ service CatalogService {
  entity WORKFLOW_HISTORY as projection on my.WORKFLOW_HISTORY;
  entity attachments as projection on my.attachments;
 
+//   function getattachments(content: String) returns String;
+
 }

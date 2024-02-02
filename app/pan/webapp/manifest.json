@@ -36,6 +36,16 @@
             "parameters": {},
             "additionalParameters": "allowed"
           }
+        },
+        "panpdfdemo-display": {
+          "semanticObject": "panpdfdemo",
+          "action": "display",
+          "title": "{{flpTitle}}",
+          "subTitle": "{{flpSubtitle}}",
+          "signature": {
+            "parameters": {},
+            "additionalParameters": "allowed"
+          }
         }
       }
     }
